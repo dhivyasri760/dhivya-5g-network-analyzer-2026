@@ -8,6 +8,15 @@ pipeline {
     }
 
     stages {
+        stage('Build Information') {
+            steps {
+                script {
+                    currentBuild.displayName =
+                        "#${env.BUILD_NUMBER} - v${params.BUILD_VERSION}"
+                }
+                echo "Building 5G Network Analyzer Version: ${params.BUILD_VERSION}"
+            }
+        }
 
         stage('Checkout') {
             steps {
@@ -47,11 +56,9 @@ pipeline {
             junit allowEmptyResults: true,
                 testResults: 'target/surefire-reports/*.xml'
         }
-
         success {
             echo '5G Network Performance Analyzer Build Successful!'
         }
-
         failure {
             echo '5G Network Performance Analyzer Build Failed!'
         }
