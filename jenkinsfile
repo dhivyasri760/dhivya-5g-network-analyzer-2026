@@ -1,0 +1,59 @@
+
+pipeline {
+    agent any
+
+    tools {
+        jdk 'JDK21'
+        maven 'Maven'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/dhivyasri760/dhivya-5g-network-analyzer-2026.git'
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                bat 'mvn clean compile'
+            }
+        }
+
+        stage('Unit Testing') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                bat 'mvn package'
+            }
+        }
+
+        stage('Archive JAR') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar',
+                    fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            junit allowEmptyResults: true,
+                testResults: 'target/surefire-reports/*.xml'
+        }
+
+        success {
+            echo '5G Network Performance Analyzer Build Successful!'
+        }
+
+        failure {
+            echo '5G Network Performance Analyzer Build Failed!'
+        }
+    }
+}
