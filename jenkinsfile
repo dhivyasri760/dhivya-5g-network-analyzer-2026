@@ -8,6 +8,7 @@ pipeline {
     }
 
     stages {
+
         stage('Build Information') {
             steps {
                 script {
@@ -43,6 +44,19 @@ pipeline {
             }
         }
 
+        stage('Publish HTML Report') {
+            steps {
+                publishHTML(target: [
+                    reportDir: 'reports',
+                    reportFiles: '5g-performance-report.html',
+                    reportName: '5G Network Performance Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: false
+                ])
+            }
+        }
+
         stage('Archive JAR') {
             steps {
                 archiveArtifacts artifacts: 'target/*.jar',
@@ -56,11 +70,14 @@ pipeline {
             junit allowEmptyResults: true,
                 testResults: 'target/surefire-reports/*.xml'
         }
+
         success {
             echo '5G Network Performance Analyzer Build Successful!'
         }
+
         failure {
             echo '5G Network Performance Analyzer Build Failed!'
         }
     }
 }
+
