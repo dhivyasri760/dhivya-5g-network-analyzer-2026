@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5G Network Performance Analyzer</title>
+</head>
+<body>
+
+    <h1>5G Network Performance Analyzer</h1>
+
+    <button onclick="loadNetworkData()">Check Network Performance</button>
+
+    <div id="result">
+        <p>RSSI: <span id="rssi">--</span> dBm</p>
+        <p>Latency: <span id="latency">--</span> ms</p>
+        <p>Throughput: <span id="throughput">--</span> Mbps</p>
+        <p>Packet Loss: <span id="packetLoss">--</span>%</p>
+        <p>Signal Quality: <span id="signalQuality">--</span></p>
+        <p>Performance Score: <span id="performanceScore">--</span></p>
+        <p>Network Quality: <span id="networkQuality">--</span></p>
+    </div>
+
+    <p id="status">Click the button to check network.</p>
+
+    <script>
+        async function loadNetworkData() {
+            try {
+                const response = await fetch(
+                    "http://localhost:8081/api/network"
+                );
+
+                const data = await response.json();
+
+                document.getElementById("rssi").textContent = data.rssi;
+                document.getElementById("latency").textContent = data.latency;
+                document.getElementById("throughput").textContent = data.throughput;
+                document.getElementById("packetLoss").textContent = data.packetLoss;
+                document.getElementById("signalQuality").textContent = data.signalQuality;
+                document.getElementById("performanceScore").textContent = data.performanceScore;
+                document.getElementById("networkQuality").textContent = data.networkQuality; 
+
+                document.getElementById("status").textContent =
+                    "Network data loaded successfully!";
+            } catch (error) {
+                document.getElementById("status").textContent =
+                    "Unable to connect to Java backend!";
+                console.error(error);
+            }
+        }
+    </script>
+
+</body>
+</html>
