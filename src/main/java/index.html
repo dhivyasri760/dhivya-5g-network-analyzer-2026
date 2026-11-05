@@ -5,51 +5,227 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>5G Network Performance Analyzer</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1220;
+            color: white;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 30px;
+            color: #38bdf8;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 10px 16px;
+            border-radius: 20px;
+            background: #334155;
+            color: #facc15;
+            font-size: 13px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: #172337;
+            padding: 24px;
+            border: 1px solid #263750;
+            border-radius: 14px;
+        }
+
+        .card h3 {
+            color: #94a3b8;
+            font-size: 15px;
+            margin-bottom: 18px;
+        }
+
+        .value {
+            font-size: 30px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        .unit {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .quality-card {
+            margin-top: 20px;
+            background: #172337;
+            padding: 25px;
+            border-radius: 14px;
+            border: 1px solid #263750;
+        }
+
+        .quality {
+            font-size: 25px;
+            color: #4ade80;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .refresh {
+            margin-top: 20px;
+            padding: 12px 22px;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .refresh:hover {
+            background: #0369a1;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #64748b;
+            font-size: 13px;
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>5G Network Performance Analyzer</h1>
+<div class="container">
 
-    <button onclick="loadNetworkData()">Check Network Performance</button>
+    <header>
+        <h1>5G Network Performance Analyzer</h1>
+        <p class="subtitle">Real-Time Network Monitoring Dashboard</p>
 
-    <div id="result">
-        <p>RSSI: <span id="rssi">--</span> dBm</p>
-        <p>Latency: <span id="latency">--</span> ms</p>
-        <p>Throughput: <span id="throughput">--</span> Mbps</p>
-        <p>Packet Loss: <span id="packetLoss">--</span>%</p>
-        <p>Signal Quality: <span id="signalQuality">--</span></p>
-        <p>Performance Score: <span id="performanceScore">--</span></p>
-        <p>Network Quality: <span id="networkQuality">--</span></p>
+        <div class="status" id="status">
+            CONNECTING TO SERVER...
+        </div>
+    </header>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>RSSI</h3>
+            <div class="value" id="rssi">--</div>
+            <span class="unit">dBm</span>
+        </div>
+
+        <div class="card">
+            <h3>Latency</h3>
+            <div class="value" id="latency">--</div>
+            <span class="unit">ms</span>
+        </div>
+
+        <div class="card">
+            <h3>Throughput</h3>
+            <div class="value" id="throughput">--</div>
+            <span class="unit">Mbps</span>
+        </div>
+
+        <div class="card">
+            <h3>Packet Loss</h3>
+            <div class="value" id="packetLoss">--</div>
+            <span class="unit">%</span>
+        </div>
+
+        <div class="card">
+            <h3>Signal Quality</h3>
+            <div class="value" id="signalQuality">--</div>
+            <span class="unit">%</span>
+        </div>
+
+        <div class="card">
+            <h3>Performance Score</h3>
+            <div class="value" id="performanceScore">--</div>
+            <span class="unit">/ 100</span>
+        </div>
+
     </div>
 
-    <p id="status">Click the button to check network.</p>
+    <div class="quality-card">
+        <h3>Network Quality Classification</h3>
+        <div class="quality" id="networkQuality">Waiting...</div>
 
-    <script>
-        async function loadNetworkData() {
-            try {
-                const response = await fetch(
-                    "http://localhost:8081/api/network"
-                );
+        <button class="refresh" onclick="loadNetworkData()">
+            Refresh Now
+        </button>
+    </div>
 
-                const data = await response.json();
+    <footer>
+        5G Network Performance Analyzer | Java + Maven + Jenkins
+        <br><br>
+        Simulated network measurements – Auto refresh every 2 seconds.
+    </footer>
 
-                document.getElementById("rssi").textContent = data.rssi;
-                document.getElementById("latency").textContent = data.latency;
-                document.getElementById("throughput").textContent = data.throughput;
-                document.getElementById("packetLoss").textContent = data.packetLoss;
-                document.getElementById("signalQuality").textContent = data.signalQuality;
-                document.getElementById("performanceScore").textContent = data.performanceScore;
-                document.getElementById("networkQuality").textContent = data.networkQuality; 
+</div>
 
-                document.getElementById("status").textContent =
-                    "Network data loaded successfully!";
-            } catch (error) {
-                document.getElementById("status").textContent =
-                    "Unable to connect to Java backend!";
-                console.error(error);
+<script>
+    async function loadNetworkData() {
+        const status = document.getElementById("status");
+
+        try {
+            const response = await fetch(
+                "http://localhost:8081/api/network"
+            );
+
+            if (!response.ok) {
+                throw new Error("Server error");
             }
+
+            const data = await response.json();
+
+            document.getElementById("rssi").textContent = data.rssi;
+            document.getElementById("latency").textContent = data.latency;
+            document.getElementById("throughput").textContent = data.throughput;
+            document.getElementById("packetLoss").textContent = data.packetLoss;
+            document.getElementById("signalQuality").textContent = data.signalQuality;
+            document.getElementById("performanceScore").textContent = data.performanceScore;
+            document.getElementById("networkQuality").textContent = data.networkQuality;
+
+            status.textContent = "● SYSTEM ONLINE - LIVE SIMULATION";
+            status.style.background = "#14532d";
+            status.style.color = "#86efac";
+
+        } catch (error) {
+            status.textContent = "● SYSTEM OFFLINE - BACKEND CONNECTION FAILED";
+            status.style.background = "#7f1d1d";
+            status.style.color = "#fecaca";
+
+            console.error(error);
         }
-    </script>
+    }
+
+    loadNetworkData();
+
+    setInterval(loadNetworkData, 2000);
+</script>
 
 </body>
 </html>
