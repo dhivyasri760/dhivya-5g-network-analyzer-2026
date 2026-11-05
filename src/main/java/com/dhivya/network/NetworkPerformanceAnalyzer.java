@@ -1,3 +1,4 @@
+
 package com.dhivya.network;
 
 public class NetworkPerformanceAnalyzer {
@@ -58,4 +59,3 @@ public class NetworkPerformanceAnalyzer {
         System.out.println("Network Quality: " + quality);
     }
 }
-
